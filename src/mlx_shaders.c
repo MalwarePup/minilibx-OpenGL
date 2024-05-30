@@ -7,7 +7,8 @@
 #include "mlx_int.h"
 
 
-void display_log(GLuint object, void (*param_func)(), void (*getlog_func)())
+void display_log(GLuint object, void (*param_func)(GLuint, GLenum, GLint*),
+  void (*getlog_func)(GLuint, GLsizei, GLsizei*, char*))
 {
   GLint log_length;
   char *log;

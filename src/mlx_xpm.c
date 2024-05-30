@@ -61,6 +61,7 @@ char	*mlx_int_static_line(char **xpm_data,int *pos,int size)
   int		len2;
   char		*str;
 
+  (void)size;
   str = xpm_data[(*pos)++];
   if ((len2 = strlen(str))>len)
     {
@@ -125,6 +126,8 @@ void	mlx_int_xpm_set_pixel(mlx_img_list_t *img, char *data, int opp, int col, in
     }
   */
   // opp is 4, do it the simple way
+  (void)img;
+  (void)opp;
   *((unsigned int *)(data+4*x)) = col;
 }
 
@@ -135,7 +138,6 @@ void	*mlx_int_parse_xpm(mlx_ptr_t *xvar,void *info,int info_size,char *(*f)())
   char	*line;
   char	**tab;
   char	*data;
-  char	*clip_data;
   int	nc;
   int	opp;
   int	cpp;
@@ -176,8 +178,6 @@ void	*mlx_int_parse_xpm(mlx_ptr_t *xvar,void *info,int info_size,char *(*f)())
     if (!(colors = malloc(nc*sizeof(*colors))))
       RETURN;
 
-  clip_data = 0;
-
   i = nc;
   while (i--)
     {
@@ -191,7 +191,7 @@ void	*mlx_int_parse_xpm(mlx_ptr_t *xvar,void *info,int info_size,char *(*f)())
 	RETURN;
 
       rgb_col = mlx_int_get_text_rgb(tab[j], tab[j+1]);
-      /*      
+      /*
       if ((rgb_col = mlx_int_get_text_rgb(tab[j], tab[j+1]))==-1)
 	{
 	  if (!(clip_data = malloc(4*width*height)) ||   // ok, nice size ..

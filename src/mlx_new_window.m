@@ -106,7 +106,7 @@ int get_mouse_button(NSEventType eventtype)
 
 - (void) flagsChanged:(NSEvent *)theEvent
 {
-  unsigned int flag;
+  int flag;
   int the_key;
   unsigned int val;
 
@@ -620,7 +620,7 @@ int get_mouse_button(NSEventType eventtype)
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, pixel_vbuffer);
   glUniform1i(glsl.loc_pixel_texture, 0);
-  
+
   glBindBuffer(GL_ARRAY_BUFFER, pixel_vbuffer);
   glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(GLfloat), (void*)0);
   glEnableVertexAttribArray(0);
@@ -636,14 +636,14 @@ int get_mouse_button(NSEventType eventtype)
   while (pixel_nb--) pixtexbuff[pixel_nb] = 0xFF000000;
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, size_x, size_y, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixtexbuff);
   pixel_nb = 0;
-  
+
 }
 
 @end
 
 
 // mlx API
- 
+
 
 void *mlx_new_window(mlx_ptr_t *mlx_ptr, int size_x, int size_y, char *title)
 {
@@ -673,6 +673,7 @@ void *mlx_new_window(mlx_ptr_t *mlx_ptr, int size_x, int size_y, char *title)
 
 void mlx_clear_window(mlx_ptr_t *mlx_ptr, mlx_win_list_t *win_ptr)
 {
+  (void)mlx_ptr;
   [(id)(win_ptr->winid) selectGLContext];
   [(id)(win_ptr->winid) clearWin];
   win_ptr->nb_flush ++;
@@ -696,6 +697,7 @@ void mlx_mouse_hook(mlx_win_list_t *win_ptr, int (*funct_ptr)(), void *param)
 
 void mlx_hook(mlx_win_list_t *win_ptr, int x_event, int x_mask, int (*funct_ptr)(), void *param)
 {
+  (void)x_mask;
   [(id)(win_ptr->winid) setEvent:x_event andFunc:funct_ptr andParam:param];
 }
 

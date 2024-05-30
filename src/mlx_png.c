@@ -70,18 +70,19 @@ int	mipng_is_type(unsigned char *ptr, char *type)
 
 
 unsigned char mipng_defilter_none(unsigned char *buff, int pos, int a, int b, int c)
-{ return (buff[pos]); }
+{ (void)a; (void)b; (void)c; return (buff[pos]); }
 unsigned char mipng_defilter_sub(unsigned char *buff, int pos, int a, int b, int c)
-{ return (buff[pos]+(unsigned int)a); }
+{ (void)b; (void)c; return (buff[pos]+(unsigned int)a); }
 unsigned char mipng_defilter_up(unsigned char *buff, int pos, int a, int b, int c)
-{ return (buff[pos]+(unsigned int)b); }
+{ (void)a; (void)c; return (buff[pos]+(unsigned int)b); }
 unsigned char mipng_defilter_average(unsigned char *buff, int pos, int a, int b, int c)
-{ return (buff[pos]+((unsigned int)a+(unsigned int)b)/2); }
+{ (void)c; return (buff[pos]+((unsigned int)a+(unsigned int)b)/2); }
 unsigned char mipng_defilter_paeth(unsigned char *buff, int pos, int a, int b, int c)
 {
   int	p;
   int	result;
 
+  (void)p;
   p = a + b - c;
   if (abs(b - c) <= abs(a - c) && abs(b - c) <= abs(a + b - c - c))
     result = a;
@@ -169,6 +170,7 @@ int	mipng_data(mlx_img_list_t *img, unsigned char *dat, png_info_t *pi)
   z_stream z_strm;
   unsigned char z_out[Z_CHUNK];
 
+  (void)z_have;
   b_pos = 0;
   if (!(buffer = malloc((long long)img->width*(long long)img->height*(long long)pi->bpp + img->height)))
     err(1, "Can't malloc");
@@ -199,7 +201,7 @@ int	mipng_data(mlx_img_list_t *img, unsigned char *dat, png_info_t *pi)
 	      inflateEnd(&z_strm);
 	      return (ERR_ZLIB);
 	    }
-	  if (b_pos + Z_CHUNK - z_strm.avail_out > img->width*img->height*pi->bpp+img->height)
+	  if (b_pos + Z_CHUNK - z_strm.avail_out > (uInt)(img->width*img->height*pi->bpp+img->height))
 	    {
 	      inflateEnd(&z_strm);
 	      return (ERR_DATA_MISMATCH);
@@ -208,7 +210,7 @@ int	mipng_data(mlx_img_list_t *img, unsigned char *dat, png_info_t *pi)
 	  b_pos += Z_CHUNK - z_strm.avail_out;
 	}
       dat += len + 4 + 4 + 4;
-    } 
+    }
   inflateEnd(&z_strm);
   if (b_pos != img->width*img->height*pi->bpp+img->height)
     {
@@ -247,7 +249,7 @@ int	mipng_crc(unsigned char *ptr, int len)
 
   file_crc = *((unsigned int *)(ptr+4+4+len));
   file_crc = ntohl(file_crc);
-  
+
   crc = 0xffffffffL;
   i = 0;
   while (i < len+4)
@@ -262,9 +264,9 @@ int	mipng_crc(unsigned char *ptr, int len)
 
 int	mipng_structure(unsigned char *ptr, int size, unsigned char **hdr, unsigned char **dat)
 {
-  unsigned int	len;
-  int		dat_state;
-  int		end;
+  int	len;
+  int	dat_state;
+  int	end;
 
   dat_state = 0;
   *hdr = NULL;

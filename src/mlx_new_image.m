@@ -77,6 +77,7 @@ void    mlx_put_image_to_window(mlx_ptr_t *mlx_ptr, mlx_win_list_t *win_ptr, mlx
 {
   mlx_img_ctx_t	*imgctx;
 
+  (void)mlx_ptr;
   if (!win_ptr->pixmgt)
     return ;
 
@@ -105,6 +106,7 @@ char    *mlx_get_data_addr(mlx_img_list_t *img_ptr, int *bits_per_pixel, int *si
 
 unsigned int    mlx_get_color_value(mlx_ptr_t *mlx_ptr, int color)
 {
+  (void)mlx_ptr;
   return (color);
 }
 
@@ -143,7 +145,7 @@ int mlx_string_put(mlx_ptr_t *mlx_ptr, mlx_win_list_t *win_ptr, int x, int y, in
     }
 
   win_ptr->nb_flush ++;
-  
+
   return (0);
 }
 

@@ -13,6 +13,7 @@
 
 void	do_loop_hook2(CFRunLoopTimerRef observer, void * info)
 {
+  (void)observer;
   ((mlx_ptr_t *)info)->loop_hook(((mlx_ptr_t *)info)->loop_hook_data);
 }
 
@@ -22,6 +23,8 @@ void do_loop_flush(CFRunLoopObserverRef observer, CFRunLoopActivity activity, vo
   mlx_ptr_t	*mlx_ptr;
   mlx_win_list_t *win;
 
+  (void)observer;
+  (void)activity;
   mlx_ptr = (mlx_ptr_t *)info;
   win = mlx_ptr->win_list;
   while (win)
@@ -43,7 +46,6 @@ void do_loop_flush(CFRunLoopObserverRef observer, CFRunLoopActivity activity, vo
 void *mlx_init()
 {
   mlx_ptr_t	*new_mlx;
-  int		bidon;
   int		i;
 
   if ((new_mlx = malloc(sizeof(*new_mlx))) == NULL)
@@ -57,16 +59,19 @@ void *mlx_init()
   new_mlx->appid = [NSApplication sharedApplication];
 
   // super magic trick to detach app from terminal, get menubar & key input events
-  for (NSRunningApplication * app in [NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.apple.finder"])
-    {
-      [app activateWithOptions:NSApplicationActivateIgnoringOtherApps];
-      break;
-    }
+  for (NSRunningApplication *app in [NSRunningApplication runningApplicationsWithBundleIdentifier:@"com.apple.finder"])
+  {
+    (void)app;
+    NSWindow *window = [[NSApplication sharedApplication] windows].firstObject;
+    [window makeKeyAndOrderFront:nil];
+    break;
+  }
   usleep(100000);
   ProcessSerialNumber psn = { 0, kCurrentProcess };
   (void) TransformProcessType(&psn, kProcessTransformToForegroundApplication);
   usleep(100000);
-  [[NSRunningApplication currentApplication] activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+  NSWindow *window = [[NSApplication sharedApplication] windows].firstObject;
+  [window makeKeyAndOrderFront:nil];
 
   // load font
   new_mlx->font = mlx_new_image(new_mlx, (FONT_WIDTH+2)*95, FONT_HEIGHT);
@@ -115,6 +120,7 @@ void mlx_loop(mlx_ptr_t *mlx_ptr)
 
 void mlx_pixel_put(mlx_ptr_t *mlx_ptr, mlx_win_list_t *win_ptr, int x, int y, int color)
 {
+  (void)mlx_ptr;
   if (!win_ptr->pixmgt)
     return ;
   [(id)(win_ptr->winid) selectGLContext];
